@@ -10,8 +10,8 @@
     </rdf:RDF>
   </metadata>
 <defs>
-    <marker id='head' orient='auto' markerWidth='2' markerHeight='4' refX='0.1' refY='2'>
-      <path d='M0,0 V4 L2,2 Z'/>
+    <marker id='head' orient='auto' markerWidth='3' markerHeight='4' refX='3' refY='2'>
+      <path d='M0,0 V4 L3,2 Z'/>
     </marker>
   </defs> 
 	<symbol overflow='visible' id='box'>
@@ -25,6 +25,10 @@
     <circle r="100"/>
     <path d="M-100,0 L 100,0 M 0,100 L 0,-100" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,1,1)"/>
   </symbol>
+	<symbol overflow='visible' id='splitter'>
+		<rect x="0" y="0" width="200" height="200" transform="translate(-100,-100)"/>
+		<path d='M-100,-50L0,0M-100,50L0,0H100'/>
+	</symbol>
 	<symbol overflow='visible' id='baseball_switch'>
 		<circle r="100"/>
 		<path d='M-100,0 A100,100 0 0 1 0,100'/>
@@ -35,6 +39,7 @@
 		<!--http://www.eeweb.com/blog/elettra_venosa/time-interleaved-adcs-for-digital-communication-receivers-->
 		<polygon points='-100,0 -50,100 100,100 100,-100 -50,-100'/>
 		<text style='stroke:none;fill:black;font-size:40px;text-anchor:middle;font-family:helvetica;'>ADC</text>
+		<circle r='5' cx='-100' class='input'/>
 	</symbol>
   <symbol overflow="visible" id='circulator'>
     <circle r="100"/>
@@ -44,14 +49,19 @@
 	<text style='stroke:none;fill:black;font-size:40px;text-anchor:middle;font-family:helvetica;' x='0' y='-120'>2</text>
 	<text style='stroke:none;fill:black;font-size:40px;text-anchor:middle;font-family:helvetica;' x='-120' y='0'>3</text>
   </symbol>
+	<symbol overflow='visible' id='isolator'>
+
+	</symbol>
 	<symbol overflow='visible' id='coupler'>
 		<rect x="0" y="0" width="200" height="200" transform="translate(-100,-100)"/>
 		<path d='M-100,0h200'/>
-		<path marker-end='url(#head)' d='M-100,50h50A50,50 0 0 1 0,100'/> 
+		<path marker-end='url(#head)' d='M-100,0A100,100 0 0 1 0,100'/> 
 	</symbol>
 	<symbol overflow='visible' id='amplifier'>
 		<!-- equilateral sqrt(3)=1.7321-->
 		<path d='M-100,100L100,0L-100,-100z'/>
+		<circle r='5' cx='-100' class='input'/>
+		<circle r='5' cx='100' class='output'/>
 	</symbol>
 	<symbol overflow='visible' id='dish'>
 		<!--<path d='M0,0l0,60M10,1l0,59M20,4l0,56M30,9l0,51M40,16l0,44M50,25l0,35M60,36l0,24' id='wave'/>-->
@@ -77,6 +87,7 @@
   <symbol overflow="visible" id="source">
     <circle r="100"/>
     <use xlink:href="#sine" transform="scale(0.8)"/>
+	<circle r='5' cx='100' class='output'/>
   </symbol>
   <symbol overflow="visible" id="filter">
     <rect x="0" y="0" width="200" height="200" transform="translate(-100,-100)"/>
