@@ -69,7 +69,21 @@
 	<rdfs:Class rdf:ID='Filter'>
 		<rdfs:subClassOf rdf:resource='#Component'/>
 	</rdfs:Class>
-	<rf:Filter>
-		<rf:Port/>
-	</rf:Filter>
+	<rdfs:Class rdf:ID='Duplexer'>
+		<rdfs:subClassOf rdf:resource='#Component'/>
+		<rdfs:comment>Used to transmit and receive on the same antenna at close frequencies</rdfs:comment>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID='Diplexer'>
+		<rdfs:subClassOf rdf:resource='#Component'/>
+		<rdfs:comment>Used to combine two signals on the same antenna at different frequencies</rdfs:comment>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID='Band'>
+
+	</rdfs:Class>
+	<rf:Band rdf:ID='L'/>
+	<rf:Band rdf:ID='C'/>
+	<rf:Band rdf:ID='X'/>
+	<rf:Band rdf:ID='Ku'/>
+	<rf:Band rdf:ID='K'/>
+	<rf:Band rdf:ID='Ka'/><!-- satellite uplink -->
 </rdf:RDF>
