@@ -5,67 +5,71 @@
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
 >
-	<!-- simplest schema to build circuit -->
-	<rdfs:Class rdf:id='Port'/>
-	<rdf:Property id='gender'>
+	<!-- 
+		simplest schema to build circuit
+		there should be a one to one mapping between symbols and
+		Classes	
+
+	-->
+	<rdfs:Class rdf:ID='Port'/>
+	<rdf:Property rdf:ID='connectedTo'>
+		<rdfs:domain rdf:resource='#Port'/>
+		<rdfs:range rdf:resource='#Port'/>
+	</rdf:Property>
+	<rdf:Property rdf:ID='gender'>
 		<rdfs:domain rdf:resource='#Port'/>
 		<rdfs:range rdf:resource='#Gender'/>
 	</rdf:Property>
-	<rdfs:Class id='Gender'/>
-	<Gender id='Male'/>
-	<Gender id='Female'/>
-	<Gender id='Neutral'/> 
-	<rdf:Property id='type'> <!-- find better name -->
+	<rdfs:Class rdf:ID='Gender'/>
+	<rf:Gender rdf:ID='Male'/>
+	<rf:Gender rdf:ID='Female'/>
+	<rf:Gender rdf:ID='Neutral'/> 
+	<rdf:Property rdf:ID='type'> <!-- find better name -->
 		<rdfs:domain rdf:resource='#Port'/>
 		<rdfs:range rdf:resource='#Connector'/>
 	</rdf:Property>
-	<rdfs:Class id='Connector'>
+	<rdfs:Class rdf:ID='Connector'>
 		<rdfs:comment>the different types of connector used in RF world (BNC, sma,...)</rdfs:comment>
 	</rdfs:Class>
-	<Connector id='BNC'/>
-	<Connector id='SMA'/>
-	<Connector id='N'/>
-	<Connector id='Waveguide'/>
-	<rdfs:Class rdf:id='Input'>
+	<rf:Connector rdf:ID='BNC'/>
+	<rf:Connector rdf:ID='SMA'/>
+	<rf:Connector rdf:ID='N'/>
+	<rf:Connector rdf:ID='Waveguide_Connector'/>
+	<rdfs:Class rdf:ID='Input'>
 		<rdfs:subClassOf rdf:resource='#Port'/>
 	</rdfs:Class>
-	<rdfs:Class rdf:id='Output'>
+	<rdfs:Class rdf:ID='Output'>
 		<rdfs:subClassOf rdf:resource='#Port'/>
 	</rdfs:Class>
-	<rdfs:Class rdf:id='Component'/>
-	<rdfs:Class rdf:id='Line'/>
-	<rdf:Property rdf:id='from'>
+	<rdfs:Class rdf:ID='Component'/>
+	<rdfs:Class rdf:ID='Line'>
+		<!-- a line is a Component with one Input and one Output-->
+		<rdfs:subClassOf rdf:resource='Component'/>
+	</rdfs:Class>
+	<!--
+	<rdf:Property rdf:ID='from'>
 		<rdfs:domain rdf:resource='#Line'/>
 		<rdfs:range rdf:resource='#Output'/>
 	</rdf:Property>
-	<rdf:Property rdf:id='to'>
+	<rdf:Property rdf:ID='to'>
 		<rdfs:domain rdf:resource='#Line'/>
 		<rdfs:range rdf:resource='#Input'/>
 	</rdf:Property>
-	<rdfs:Class rdf:id='#Coax'>
+	-->
+	<rdfs:Class rdf:ID='Coax'>
 		<rdfs:subClassOf rdf:resource='#Line'/>
 	</rdfs:Class>
-	<rdfs:Class rdf:id='#Waveguide'>
+	<rdfs:Class rdf:ID='Waveguide'>
 		<rdfs:subClassOf rdf:resource='#Line'/>
 	</rdfs:Class>
 	<!-- 	how do we tell that a filter has one input and one output? 
 			do we need OWL?
 	-->
 	<!-- how do we define new Components? -->
-	<rdfs:Class id='Filter'>
+	<rdfs:Class rdf:ID='Filter'>
 		<rdfs:subClassOf rdf:resource='#Component'/>
 	</rdfs:Class>
-	<!-- describe the system source -> amplifier -> adc -->
-	<rf:Component rdf:about='#source'/>
-	<rf:Component rdf:about='#amp'/>
-	<rf:Component rdf:about='#sink'/>
-	<!-- how do we get id's for the component's ports? -->
-	<rf:Line> 
-		<rf:from rdf:resource='#source_output'/>
-		<rf:to rdf:resource='#amp_input'/>
-	</rf:Line>
-	<rf:Line> 
-		<rf:from rdf:resource='#amp_output'/>
-		<rf:to rdf:resource='#sink_input'/>
-	</rf:Line>
+	<rf:Filter>
+		<rf:Port/>
+	</rf:Filter>
 </rdf:RDF>
