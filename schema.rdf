@@ -42,6 +42,10 @@
 		<rdfs:subClassOf rdf:resource='#Port'/>
 	</rdfs:Class>
 	<rdfs:Class rdf:ID='Component'/>
+	<rdfs:Property rdf:ID='port'>
+		<rdfs:domain rdf:resource='#Component'/>
+		<rdfs:range rdf:resource='#Port'/>
+	</rdfs:Property>
 	<rdfs:Class rdf:ID='Line'>
 		<!-- a line is a Component with one Input and one Output-->
 		<rdfs:subClassOf rdf:resource='Component'/>
