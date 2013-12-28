@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+	a simple schematic with meta-data, uses symbols from symbols.svg
+	can be queried with SPARQL
+-->
+<?xml-stylesheet href="symbols.css" type="text/css"?>
+<svg
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:xlink='http://www.w3.org/1999/xlink'
+	xmlns="http://www.w3.org/2000/svg"
+	width="1000"
+	height="2000"
+	id="svg2"
+	version="1.1"
+>
+	<style type='text/css'>
+	</style>
+	<metadata>
+		<rdf:RDF 
+			xmlns:rf='http://www.example.org/rf#' 
+			xml:base='http://www.example.org/rf#'
+		>
+			<rf:Source rdf:about='#s'>
+				<rf:port><rf:Port rdf:ID='s_out'/></rf:port>
+			</rf:Source>
+			<rf:Line>
+				<!-- this is used to physically connect the components -->
+				<rf:port rdf:resource='#s_out'/>
+				<rf:port rdf:resource='#a_in'/>
+			</rf:Line>
+			<rf:Amplifier rdf:about='#a'>
+				<rf:port><rf:Port rdf:ID='a_in'/></rf:port>
+				<rf:port><rf:Port rdf:ID='a_out'/></rf:port>
+			</rf:Amplifier>
+			<rf:Line>
+				<rf:port rdf:resource='#a_out'/>
+				<rf:port rdf:resource='#d_in'/>
+			</rf:Line>
+			<rf:Antenna rdf:about='#d'>
+				<rf:port><rf:Port rdf:ID='d_in'/></rf:port>
+			</rf:Antenna>
+		</rdf:RDF>
+	</metadata>	
+	<g transform='translate(200,200)'>
+		<use id='s' xlink:href='symbols.svg#source'/>
+		<use id='a' xlink:href='symbols.svg#amplifier' x='300'/>
+		<use id='d' xlink:href='symbols.svg#rdish' x='600'/>
+	</g>
+</svg>
