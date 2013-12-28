@@ -1,6 +1,6 @@
 RDF annotation of SVG diagrams for RF systems
 =============================================
-
+<img src='http://jean-marc.github.io/diagram/example.svg' alt='jean-marc.github.io/diagram/example.svg'/>
 Introduction
 ------------
 The SVG standard allows for RDF metadata to be inserted inside a document (inside svg:metadata), this project aims at adding a consistent description to a schematic representing an RF (Radio Frequency) system. 
