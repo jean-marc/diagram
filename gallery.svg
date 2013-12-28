@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet href="symbols.css" type="text/css"?>
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -12,28 +13,10 @@
    version="1.1"
 >
 	<defs>
-	<style>
-		text{
-			stroke:none;
-			fill:black;
-			text-anchor:middle;
-			font-family:helvetica;
-			font-size:40px;
-			text-rendering:optimizeLegibility;
-			-webkit-font-smoothing: antialiased;
-		}
-		#parabola
-		{
-			stroke-width:3;
-		}
-		#wave
-		{
-			stroke-width:1;
-			stroke:lime;
-		}
+	<style type='text/css'>
 	</style>
 	</defs>
-	<g style='fill:none;stroke:black;stroke-width:10;' transform='translate(100,200)'>
+	<g transform='translate(100,200)'>
 		<use xlink:href='./symbols.svg#combiner' x='0' y='0'/>
 		<use xlink:href='./symbols.svg#source' x='300' y='0'/>
 		<use xlink:href='./symbols.svg#mixer' x='600' y='0'/>
@@ -43,6 +26,8 @@
 		<use xlink:href='./symbols.svg#baseball_switch' x='1800' y='0'/>
 		<use xlink:href='./symbols.svg#adc' x='2100' y='0'/>
 		<use xlink:href='./symbols.svg#splitter' x='2400' y='0'/>
+		<use xlink:href='./symbols.svg#diplexer' x='2700' y='0'/>
+		<use xlink:href='./symbols.svg#duplexer' x='3000' y='0'/>
 		<use xlink:href='./symbols.svg#lowpass' x='0' y='300'/>
 		<use xlink:href='./symbols.svg#bandpass' x='300' y='300'/>
 		<use xlink:href='./symbols.svg#highpass' x='600' y='300'/>

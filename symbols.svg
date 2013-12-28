@@ -110,6 +110,16 @@
     <path d="m-10,10l20 -20" transform="translate(0,50)"/>
     <path d="m-10,10l20 -20"/>
   </symbol>
+	<symbol overflow='visible' id='diplexer'>
+	<!-- low-pass and high-pass combined-->
+	<use xlink:href='#lowpass' y='-100'/>
+	<use xlink:href='#highpass' y='100'/>
+
+	</symbol>
+	<symbol overflow='visible' id='duplexer'>
+		<use xlink:href='#circulator'/>
+	</symbol>
+	<!-- test -->
   <symbol overflow="visible" id="tuner">
     <!-- simplify: mixer + filter + amplifier -->
     <rect x="0" y="0" width="600" height="300" transform="translate(-300,-150)"/>
