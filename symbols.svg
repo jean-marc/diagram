@@ -10,15 +10,7 @@
     </rdf:RDF>
   </metadata>
 <defs>
-<marker id="Triangle"
-      viewBox="0 0 10 10" refX="0" refY="5" 
-      markerUnits="strokeWidth"
-      markerWidth="4" markerHeight="3"
-      orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" />
-    </marker>
-
-    <marker id='head' viewBox='0 0 10 10' markerUnits="strokeWidth" orient='auto' markerWidth='3' markerHeight='4' refX='3' refY='2'>
+    <marker overflow='visible' id='head' viewBox='0 0 10 10' markerUnits="strokeWidth" orient='auto' markerWidth='3' markerHeight='4' refX='3' refY='2'>
       <path d='M0,0 V4 L3,2 Z'/>
     </marker>
   </defs> 
@@ -41,7 +33,6 @@
 		<circle r="100"/>
 		<path d='M-100,0 A100,100 0 0 1 0,100'/>
 		<path d='M 0,-100A100,100 0 0 0 100,0'/>
-
 	</symbol>
 	<symbol overflow='visible' id='adc'>
 		<!--http://www.eeweb.com/blog/elettra_venosa/time-interleaved-adcs-for-digital-communication-receivers-->
@@ -69,7 +60,9 @@
 		<!-- equilateral sqrt(3)=1.7321-->
 		<path d='M-100,100L100,0L-100,-100z'/>
 		<circle r='5' cx='-100' class='input'/>
+		<circle r='5' cx='-200' class='input_bezier'/>
 		<circle r='5' cx='100' class='output'/>
+		<circle r='5' cx='200' class='output_bezier'/>
 	</symbol>
 	<symbol overflow='visible' id='dish'>
 		<!--<path d='M0,0l0,60M10,1l0,59M20,4l0,56M30,9l0,51M40,16l0,44M50,25l0,35M60,36l0,24' id='wave'/>-->
@@ -83,7 +76,8 @@
 	</symbol>
 	<symbol overflow='visible' id='rdish'>
 		<use xlink:href='#parabola'/>
-		<circle r='5' cx='-100' class='input'/>
+		<circle r='5' cx='-10' class='input'/>
+		<circle r='5' cx='-50' class='input_bezier'/>
 	</symbol>
 	<symbol overflow='visible' id='ldish'><use xlink:href='#parabola' transform='scale(-1,1)'/></symbol>
 	<symbol overflow='visible' id='satellite'>
@@ -99,6 +93,8 @@
     <circle r="100"/>
     <use xlink:href="#sine" transform="scale(0.8)"/>
 	<circle r='5' cx='100' class='output'/>
+	<!-- add a point to help Bezier curve -->
+	<circle r='5' cx='200' class='output_bezier'/>
   </symbol>
   <symbol overflow="visible" id="filter">
     <rect x="0" y="0" width="200" height="200" transform="translate(-100,-100)"/>
