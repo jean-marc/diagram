@@ -7,9 +7,7 @@
 >
 	<!-- 
 		simplest schema to build circuit
-		there should be a one to one mapping between symbols and
-		Classes	
-
+		there should be a one to one mapping between symbols and Classes	
 	-->
 	<rdfs:Class rdf:ID='Port'/>
 	<rdf:Property rdf:ID='connectedTo'>
@@ -48,7 +46,7 @@
 	</rdfs:Property>
 	<rdfs:Class rdf:ID='Line'>
 		<!-- a line is a Component with one Input and one Output-->
-		<rdfs:subClassOf rdf:resource='Component'/>
+		<rdfs:subClassOf rdf:resource='#Component'/>
 	</rdfs:Class>
 	<!--
 	<rdf:Property rdf:ID='from'>
@@ -71,6 +69,15 @@
 	-->
 	<!-- how do we define new Components? -->
 	<rdfs:Class rdf:ID='Filter'>
+		<rdfs:subClassOf rdf:resource='#Component'/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID='Amplifier'>
+		<rdfs:subClassOf rdf:resource='#Component'/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID='Source'>
+		<rdfs:subClassOf rdf:resource='#Component'/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID='Antenna'>
 		<rdfs:subClassOf rdf:resource='#Component'/>
 	</rdfs:Class>
 	<rdfs:Class rdf:ID='Duplexer'>
