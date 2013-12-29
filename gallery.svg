@@ -13,9 +13,13 @@
    version="1.1"
 >
 	<defs>
+		<!--repeated from symbols.svg because does not work with Chrome -->
+		<marker overflow='visible' id='head' viewBox='0 0 10 10' markerUnits="strokeWidth" orient='auto' markerWidth='3' markerHeight='4' refX='3' refY='2'>
+		  <path d='M0,0 V4 L3,2 Z'/>
+		</marker>
+	</defs>
 	<style type='text/css'>
 	</style>
-	</defs>
 	<g transform='translate(100,200)'>
 		<use xlink:href='./symbols.svg#combiner' x='0' y='0'/>
 		<use xlink:href='./symbols.svg#source' x='300' y='0'/>
