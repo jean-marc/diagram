@@ -17,7 +17,12 @@ RDF Schema
 Lines vs components
 -------------------
 Once components are put into place they need to be connected with lines, the natural candidates are svg:line or svg:path but unfortunately SVG does not allow URI's to be used as location (see http://tavmjong.free.fr/SVG/CONNECTORS/index.xhtml for how that feature could be added to SVG), so a SVG renderer must be used to determine the absolute location of rf:Port and draw the paths.
+The RDF document must be queried to find all the rf:Line and their respective rf:Port.
 
+	PREFIX rf:<http://www.example.org/rf#> 
+	SELECT * WHERE { ?s a rf:Line;rf:port ?p }
+
+At this stage there is no sanity check on the result (there should be one input and one output).
 
 
 Tools
