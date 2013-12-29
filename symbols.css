@@ -7,3 +7,12 @@ svg{
 {
 	stroke-width:3;
 }
+.input{
+	stroke:green;
+}
+.output{
+	stroke:red;
+}
+line{
+	marker-end:url('symbols.svg#head');
+}

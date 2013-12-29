@@ -11,25 +11,41 @@
 	xmlns="http://www.w3.org/2000/svg"
 	width="1000"
 	height="2000"
-	id="svg2"
+	id="svg"
 	version="1.1"
+	onload='load()'
 >
 	<style type='text/css'>
+		<!-- does not work in chrome -->
+		#s .output{
+			stroke:cyan;
+		}
+		#a .input{
+			stroke:cyan;
+		}
 	</style>
+	<defs>
+		</defs>
 	<metadata>
 		<rdf:RDF 
 			xmlns:rf='http://www.example.org/rf#' 
 			xml:base='http://www.example.org/rf#'
 		>
 			<rf:Source rdf:about='#s'>
+				<!-- the Port can be retrieved with CSS selector #s .output -->
 				<rf:port><rf:Port rdf:ID='s_out'/></rf:port>
 			</rf:Source>
-			<rf:Line>
+			<rf:Line rdf:about='#s_a'>
 				<!-- this is used to physically connect the components -->
+				<!-- 
+				    sharing Port, could be more accurate if Ports were connected together
+					but would make notation heavy (twice as many ports)
+				-->
 				<rf:port rdf:resource='#s_out'/>
 				<rf:port rdf:resource='#a_in'/>
 			</rf:Line>
 			<rf:Amplifier rdf:about='#a'>
+				<!-- the Port can be retrieved with CSS selector #a .input -->
 				<rf:port><rf:Port rdf:ID='a_in'/></rf:port>
 				<rf:port><rf:Port rdf:ID='a_out'/></rf:port>
 			</rf:Amplifier>
@@ -42,9 +58,34 @@
 			</rf:Antenna>
 		</rdf:RDF>
 	</metadata>	
+	<!--<script xlink:href='svg_dom/showbbox.js'/>-->
+	<script type="text/javascript">
+	<!--let's find position of Component's Ports -->
+	<!-- instanceRoot not implemented in Firefox -->
+	function connect(from,to){
+		origin=document.getElementById(from);
+		dest=document.getElementById(to);
+		line=document.createElementNS("http://www.w3.org/2000/svg","line");
+		line.setAttributeNS(null,'marker-end','url(symbols.svg#Triangle)');
+		line.setAttributeNS(null,'class','Line');
+		var m=origin.getTransformToElement(line);
+		var n=dest.getTransformToElement(line);
+		origin_out=origin.instanceRoot.correspondingElement.querySelector('.output');
+		dest_in=dest.instanceRoot.correspondingElement.querySelector('.input');//does not work if multiple use
+		line.setAttributeNS(null,"x1",origin_out.cx.baseVal.value*m.a+origin_out.cy.baseVal.value*m.c+m.e);
+		line.setAttributeNS(null,"y1",origin_out.cx.baseVal.value*m.b+origin_out.cy.baseVal.value*m.d+m.f);
+		line.setAttributeNS(null,"x2",dest_in.cx.baseVal.value*n.a+dest_in.cy.baseVal.value*n.c+n.e);
+		line.setAttributeNS(null,"y2",dest_in.cx.baseVal.value*n.b+dest_in.cy.baseVal.value*n.d+n.f);
+		document.getElementById('svg').appendChild(line);
+	}
+	function load(){
+		connect('s','a');
+		connect('a','d');
+	}
+	</script>
 	<g transform='translate(200,200)'>
-		<use id='s' xlink:href='symbols.svg#source'/>
-		<use id='a' xlink:href='symbols.svg#amplifier' x='300'/>
-		<use id='d' xlink:href='symbols.svg#rdish' x='600'/>
+		<use id='s' xlink:href='symbols.svg#source' transform='rotate(0)'/>
+		<use id='a' xlink:href='symbols.svg#amplifier' transform='translate(300)'/>
+		<use id='d' xlink:href='symbols.svg#rdish' transform='translate(600)'/>
 	</g>
 </svg>

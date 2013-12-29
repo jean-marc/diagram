@@ -10,7 +10,15 @@
     </rdf:RDF>
   </metadata>
 <defs>
-    <marker id='head' orient='auto' markerWidth='3' markerHeight='4' refX='3' refY='2'>
+<marker id="Triangle"
+      viewBox="0 0 10 10" refX="0" refY="5" 
+      markerUnits="strokeWidth"
+      markerWidth="4" markerHeight="3"
+      orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+
+    <marker id='head' viewBox='0 0 10 10' markerUnits="strokeWidth" orient='auto' markerWidth='3' markerHeight='4' refX='3' refY='2'>
       <path d='M0,0 V4 L3,2 Z'/>
     </marker>
   </defs> 
@@ -73,7 +81,10 @@
 		<path d='M-20,0L0,-30L20,0z' transform='translate(0,33)' id='base'/>
 		<use xlink:href='#dish' transform="rotate(-135)"/>
 	</symbol>
-	<symbol overflow='visible' id='rdish'><use xlink:href='#parabola'/></symbol>
+	<symbol overflow='visible' id='rdish'>
+		<use xlink:href='#parabola'/>
+		<circle r='5' cx='-100' class='input'/>
+	</symbol>
 	<symbol overflow='visible' id='ldish'><use xlink:href='#parabola' transform='scale(-1,1)'/></symbol>
 	<symbol overflow='visible' id='satellite'>
 		<rect width="80" height="150" transform="translate(-40,-100)"/>
