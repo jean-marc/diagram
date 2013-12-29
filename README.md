@@ -16,14 +16,22 @@ RDF Schema
 
 Lines vs components
 -------------------
-Once components are put into place they need to be connected with lines, the natural candidates are svg:line or svg:path but unfortunately SVG does not allow URI's to be used as location (see http://tavmjong.free.fr/SVG/CONNECTORS/index.xhtml for how that feature could be added to SVG), so a SVG renderer must be used to deteremine the absolute location of rf:Port and draw the paths.
+Once components are put into place they need to be connected with lines, the natural candidates are svg:line or svg:path but unfortunately SVG does not allow URI's to be used as location (see http://tavmjong.free.fr/SVG/CONNECTORS/index.xhtml for how that feature could be added to SVG), so a SVG renderer must be used to determine the absolute location of rf:Port and draw the paths.
+
+
 
 Tools
 -----
-SVG files can be converted with Inkscape or librsvg (live.gnome.org/LibRsvg):
+SVG files can be converted with Inkscape or librsvg (http://live.gnome.org/LibRsvg):
 
 	rsvg-convert example.svg > example.png
 
 Extracting the RDF metadata from SVG file can be done with the tool provided by librdf(http://librdf.org/raptor/)
 
 	rapper -f scanForRDF=1 example.svg
+
+Appendix
+--------
+When loading files from the local file system Chrome needs to be started with a special flag:
+
+	google-chrome --allow-file-access-from-files & 2> /dev/null
