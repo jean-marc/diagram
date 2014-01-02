@@ -9,7 +9,7 @@
 	xmlns:svg="http://www.w3.org/2000/svg"
 	xmlns:xlink='http://www.w3.org/1999/xlink'
 	xmlns="http://www.w3.org/2000/svg"
-	width="1000"
+	width="2000"
 	height="2000"
 	id="svg"
 	version="1.1"
@@ -22,6 +22,9 @@
 		}
 		#a .input{
 			stroke:cyan;
+		}
+		#s_a{
+			stroke:lime;
 		}
 	</style>
 	<defs>
@@ -39,49 +42,75 @@
 			<path d='M0,0 V4 L3,2 Z'/>
 		</marker>
 	</defs>
-	<metadata id='meta'><rdf:RDF 
+	<script xlink:href='jquery.js'/>
+	<script xlink:href='rdfquery-read-only/jquery.uri.js'/>
+	<script xlink:href='rdfquery-read-only/jquery.xmlns.js'/>
+	<script xlink:href='rdfquery-read-only/jquery.datatype.js'/>
+	<script xlink:href='rdfquery-read-only/jquery.curie.js'/>
+	<script xlink:href='rdfquery-read-only/jquery.rdf.js'/>
+	<script xlink:href='rdfquery-read-only/jquery.rdf.json.js'/>
+	<script xlink:href='rdfquery-read-only/jquery.rdf.xml.js'/>
+	<script xlink:href='diagram.js'/>
+	<script type="text/javascript">
+	function load(){
+		parse_rdf();
+	}
+	</script>
+
+	<metadata id='meta'>
+		<rdf:RDF 
 			xmlns:rf='http://www.example.org/rf#' 
 			xml:base='http://www.example.org/rf#'
 		>
 			<rf:Source rdf:about='#s'>
-				<!-- the Port can be retrieved with CSS selector #s .output -->
-				<rf:port><rf:Port rdf:ID='s_out'/></rf:port>
+				<!-- that information could be gleaned from the SVG document -->
+				<!--<rf:port><rf:Output rdf:ID='s_out'/></rf:port>-->
+				<rf:output><rf:Port rdf:ID='s_out'/></rf:output>
 			</rf:Source>
 			<rf:Line rdf:about='#s_a'>
-				<!-- this is used to physically connect the components -->
-				<!-- 
-				    sharing Port, could be more accurate if Ports were connected together
-					but would make notation heavy (twice as many ports)
-				-->
 				<rf:port rdf:resource='#s_out'/>
 				<rf:port rdf:resource='#a_in'/>
 			</rf:Line>
 			<rf:Amplifier rdf:about='#a'>
-				<!-- the Port can be retrieved with CSS selector #a .input -->
-				<rf:port><rf:Port rdf:ID='a_in'/></rf:port>
-				<rf:port><rf:Port rdf:ID='a_out'/></rf:port>
+				<!-- that information could be gleaned from the SVG document -->
+				<!--
+				<rf:port><rf:Input rdf:ID='a_in'/></rf:port>
+				<rf:port><rf:Output rdf:ID='a_out'/></rf:port>
+				-->
+				<rf:input><rf:Port rdf:ID='a_in'/></rf:input>
+				<rf:output><rf:Port rdf:ID='a_out'/></rf:output>
+			</rf:Amplifier>
+			<rf:Amplifier rdf:about='#a1'>
+				<rf:input><rf:Port rdf:ID='a1_in'/></rf:input>
 			</rf:Amplifier>
 			<rf:Line>
+				<rf:port rdf:resource='#s_out'/>
+				<rf:port rdf:resource='#a1_in'/>
+			</rf:Line>
+			<rf:Line>
 				<rf:port rdf:resource='#a_out'/>
+				<rf:port rdf:resource='#f_in'/>
+			</rf:Line>
+			<rf:Line>
+				<rf:port rdf:resource='#f_out'/>
 				<rf:port rdf:resource='#d_in'/>
 			</rf:Line>
+			<rf:Filter rdf:about='#f'>
+				<rf:input><rf:Port rdf:ID='f_in'/></rf:input>
+				<rf:output><rf:Port rdf:ID='f_out'/></rf:output>
+			</rf:Filter>
 			<rf:Antenna rdf:about='#d'>
-				<rf:port><rf:Port rdf:ID='d_in'/></rf:port>
+				<!-- that information could be gleaned from the SVG document -->
+				<!-- <rf:port><rf:Input rdf:ID='d_in'/></rf:port>-->
+				<rf:input><rf:Port rdf:ID='d_in'/></rf:input>
 			</rf:Antenna>
 		</rdf:RDF>
 	</metadata>	
-	<script xlink:href='diagram.js'/>
-	<script type="text/javascript">
-	function load(){
-		connect_path('s','a');
-		connect_path('s','a1');
-		connect_path('a','d');
-	}
-	</script>
 	<g transform='translate(200,200)'>
 		<use id='s' xlink:href='symbols.svg#source' transform='translate(0,150) rotate(0)'/>
 		<use id='a' xlink:href='symbols.svg#amplifier' transform='translate(400) rotate(0)'/>
 		<use id='a1' xlink:href='symbols.svg#amplifier' transform='translate(400,300) rotate(0)'/>
-		<use id='d' xlink:href='symbols.svg#rdish' transform='translate(700,500) scale(1)'/>
+		<use id='d' xlink:href='symbols.svg#rdish' transform='translate(900,500) scale(1)'/>
+		<use id='f' xlink:href='symbols.svg#bandpass' transform='translate(700,200) scale(1) rotate(90)'/>
 	</g>
 </svg>
