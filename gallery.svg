@@ -38,5 +38,6 @@
 		<use xlink:href='./symbols.svg#parabola' x='900' y='300' />
 		<use xlink:href='./symbols.svg#satellite' x='1200' y='300' />
 		<use xlink:href='./symbols.svg#tuner' x='300' y='600'/>
+		<use xlink:href='./symbols.svg#block_converter' x='900' y='600'/>
 	</g>
 </svg>
