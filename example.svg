@@ -26,6 +26,12 @@
 		#s_a{
 			stroke:lime;
 		}
+		.selected{
+			stroke:cyan;
+		}
+		._1{
+			stroke:magenta;
+		}
 	</style>
 	<defs>
 		<!--repeated from symbols.svg because does not work with Chrome -->
@@ -50,67 +56,101 @@
 	<script xlink:href='rdfquery-read-only/jquery.rdf.js'/>
 	<script xlink:href='rdfquery-read-only/jquery.rdf.json.js'/>
 	<script xlink:href='rdfquery-read-only/jquery.rdf.xml.js'/>
+	<script xlink:href='jquery-json-read-only/src/jquery.json.js'/>
 	<script xlink:href='diagram.js'/>
 	<script type="text/javascript">
 	function load(){
 		parse_rdf();
+		mouse_event();
+		s=document.getElementById('test_ab');
+		path=document.createElementNS("http://www.w3.org/2000/svg","path");
+		path.setAttributeNS(null,'d','M0,0L100,0');
+		s.appendChild(path);
 	}
 	</script>
-
 	<metadata id='meta'>
 		<rdf:RDF 
 			xmlns:rf='http://www.example.org/rf#' 
 			xml:base='http://www.example.org/rf#'
 		>
 			<rf:Source rdf:about='#s'>
-				<!-- that information could be gleaned from the SVG document -->
-				<!--<rf:port><rf:Output rdf:ID='s_out'/></rf:port>-->
-				<rf:output><rf:Port rdf:ID='s_out'/></rf:output>
 			</rf:Source>
-			<rf:Line rdf:about='#s_a'>
-				<rf:port rdf:resource='#s_out'/>
-				<rf:port rdf:resource='#a_in'/>
+			<rf:Line rdf:about='#s_a'><!-- need id only if we want to style element -->
+				<rf:port rdf:resource='#s_output'/>
+				<rf:port rdf:resource='#a_input'/>
 			</rf:Line>
 			<rf:Amplifier rdf:about='#a'>
-				<!-- that information could be gleaned from the SVG document -->
-				<!--
-				<rf:port><rf:Input rdf:ID='a_in'/></rf:port>
-				<rf:port><rf:Output rdf:ID='a_out'/></rf:port>
-				-->
-				<rf:input><rf:Port rdf:ID='a_in'/></rf:input>
-				<rf:output><rf:Port rdf:ID='a_out'/></rf:output>
 			</rf:Amplifier>
 			<rf:Amplifier rdf:about='#a1'>
-				<rf:input><rf:Port rdf:ID='a1_in'/></rf:input>
+				<rf:gain>60</rf:gain>
 			</rf:Amplifier>
+			<rf:Component rdf:about='#b'>
+
+			</rf:Component>
 			<rf:Line>
-				<rf:port rdf:resource='#s_out'/>
-				<rf:port rdf:resource='#a1_in'/>
+				<rf:port rdf:resource='#s_output'/>
+				<rf:port rdf:resource='#a1_input'/>
 			</rf:Line>
 			<rf:Line>
-				<rf:port rdf:resource='#a_out'/>
-				<rf:port rdf:resource='#f_in'/>
+				<rf:port rdf:resource='#a_output'/>
+				<rf:port rdf:resource='#b_input_1'/>
 			</rf:Line>
 			<rf:Line>
-				<rf:port rdf:resource='#f_out'/>
-				<rf:port rdf:resource='#d_in'/>
+				<rf:port rdf:resource='#a1_output'/>
+				<rf:port rdf:resource='#b_input'/>
+			</rf:Line>
+			<rf:Line>
+				<rf:port rdf:resource='#b_output'/>
+				<rf:port rdf:resource='#f_input'/>
 			</rf:Line>
 			<rf:Filter rdf:about='#f'>
-				<rf:input><rf:Port rdf:ID='f_in'/></rf:input>
-				<rf:output><rf:Port rdf:ID='f_out'/></rf:output>
 			</rf:Filter>
+			<rf:Line>
+				<rf:port rdf:resource='#f_output'/>
+				<rf:port rdf:resource='#d_input'/>
+			</rf:Line>
 			<rf:Antenna rdf:about='#d'>
-				<!-- that information could be gleaned from the SVG document -->
-				<!-- <rf:port><rf:Input rdf:ID='d_in'/></rf:port>-->
-				<rf:input><rf:Port rdf:ID='d_in'/></rf:input>
 			</rf:Antenna>
+			<!--
+			<rf:Component rdf:about='#j'/>
+			<rf:Component rdf:about='#k'/>
+			<rf:Line>
+				<rf:port rdf:resource='#j_output'/>
+				<rf:port rdf:resource='#k_input'/>
+			</rf:Line>
+			-->
 		</rdf:RDF>
 	</metadata>	
+	<symbol id='test_port' overflow='visible'>
+		<circle r='4'/>
+	</symbol>
+	<symbol id='test_a' overflow='visible'>
+		<use xlink:href='#test_port' class='output'/>
+		<use xlink:href='#test_port' y='100' class='output bezier'/>
+	</symbol>
+	<symbol id='test_b' overflow='visible'>
+		<use xlink:href='#test_port' class='input'/>
+		<use xlink:href='#test_port' y='100' class='input bezier'/>
+	</symbol>
+	<symbol id='test_ab' overflow='visible'>
+		<metadata>
+
+		</metadata>
+		<use id='j' xlink:href='#test_a' transform='translate(0)'/>
+		<use id='k' xlink:href='#test_b' transform='translate(100)'/>
+	</symbol>
 	<g transform='translate(200,200)'>
 		<use id='s' xlink:href='symbols.svg#source' transform='translate(0,150) rotate(0)'/>
 		<use id='a' xlink:href='symbols.svg#amplifier' transform='translate(400) rotate(0)'/>
 		<use id='a1' xlink:href='symbols.svg#amplifier' transform='translate(400,300) rotate(0)'/>
-		<use id='d' xlink:href='symbols.svg#rdish' transform='translate(900,500) scale(1)'/>
-		<use id='f' xlink:href='symbols.svg#bandpass' transform='translate(700,200) scale(1) rotate(90)'/>
+		<use id='b' xlink:href='symbols.svg#baseball_switch' transform='translate(700,150) scale(.8) rotate(0)'/>
+		<use id='f' xlink:href='symbols.svg#bandpass' transform='translate(950,150) scale(1) rotate(0)'/>
+		<use id='d' xlink:href='symbols.svg#rdish' transform='translate(1150,150) scale(2)'/>
+		<use id='jm' xlink:href='#test_ab' transform='translate(0,500)'/>
+		<use id='terra' xlink:href='#test_ab' transform='translate(200,500)'/>
+		<!--
+		<use id='j' xlink:href='#test_a' transform='translate(0)'/>
+		<use id='k' xlink:href='#test_b' transform='translate(100,200)'/>
+		-->
 	</g>
 </svg>
