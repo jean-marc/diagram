@@ -9,11 +9,13 @@ Introduction
 ------------
 The SVG standard allows for RDF metadata to be inserted inside a document (inside svg:metadata), this project aims at adding a consistent description to a schematic representing an RF (Radio Frequency) system. 
 The first stage is to define a schema to represent all the building blocks of a system (source, sink, filter,...).
+This tool can be used to generate nice graphics (thanks to the power of CSS) but also offer an interactive display of the diagram: information can be displayed by hovering the mouse above an element, incremental views of components (look inside the box). Lastly the diagram can be queried as a database: which components are connected to component X, list all the couplers present in the system, etc...
 We will investigate tools to edit the SVG document and its metadata.
 
 SVG and RDF
 -----------
-SVG has a powerful tool for element reuse: svg:symbol and svg:use, first an image is defined then it can be reused anywhere in the document. Here is an example of a simple component, a generic box with one input and one output:
+SVG has a powerful tool for element reuse: svg:symbol and svg:use, first an image is defined then it can be reused anywhere in the document. 
+Here is an example of a simple component, a generic box with one input and one output:
 ```xml
 	<symbol id='port'>
 		<metadata>
@@ -53,6 +55,7 @@ Let us now use the symbol:
 		<use xlink:href='#component' transform='translate(300,100) scale(0.5)' id='comp_1'/>
 	</g>
 ```
+Note that the new instance has a different id `#comp_0' from the symbol `#component'.
 The next stage is to connect those two components together through a line (the nature of the line, coax or waveguide is left undefined at this stage), the natural SVG elements to represent such a line are svg:line or, more powerful svg:path.   
 Computing the origin and destination is fairly challenging, the 3x3 transform matrix needs to be taken into account:
 ```xml 
@@ -65,6 +68,8 @@ Computing the origin and destination is fairly challenging, the 3x3 transform ma
 Better is to add the metadata and have a program create the SVG element for us:
 ```xml
 	<g>
+		<use xlink:href='#component' transform='scale(0.5)' id='comp_0'/>
+		<use xlink:href='#component' transform='translate(300) scale(0.5)' id='comp_1'/>
 		<metadata>
 			<rdf:RDF>
 				<rf:Line rdf:about='#line_0_1'>
@@ -73,11 +78,51 @@ Better is to add the metadata and have a program create the SVG element for us:
 				</rf:Line>
 			</rdf:RDF>
 		</metadata>
-		<use xlink:href='#component' transform='scale(0.5)' id='comp_0'/>
-		<use xlink:href='#component' transform='translate(300) scale(0.5)' id='comp_1'/>
 	</g>
 ```
-Note the two resources #comp_0_output and #comp_1_output must exist before processing the statement, it is the responsibility of the program.   
+This scheme can only work if the resources #comp_0_output and #comp_1_output have been defined before processing the statement, here is how it is done:
+1.	the SVG document is traversed to find svg:use statement	
+2.	for each statement the corresponding svg:symbol is read to find metadata (this could be done recursively in case of subclasses see ...), if the symbol has a rf:input or rf:output property a new id is created by concatenating the instance's ID and the symbol's port ID. eg.:
+```
+	<rdf:Description rdf:about='#component'>
+		<rf:input rdf:resource='#in'/>
+	</rdf:Description>
+		
+Defining new symbols, inheritance vs composition
+------------------------------------------------
+When a new symbol is defined from existing symbols the parser assumes that the symbols inherits from the first used symbol, if it is not the intent metadata is to be added to define the class of the new symbol:
+```xml
+	<symbol id='a'>
+		<metadata>
+			<rdf:RDF>
+				<rf:A rdf:about='#a'/>
+			</rdf:RDF>
+		</metadata>
+		<!-- ... -->
+	</symbol>
+	<symbol id='b'>
+		<use xlink:href='#a'/>
+		<use/>
+		<!-- more svg:use or svg:* -->
+	</symbol>
+```
+So in this case symbol `b' is of class `rf:A' and the following statement will be added to the RDF store:
+```xml
+	<rf:A rdf:about='#b'/>
+```
+If the new symbol `d' is not of class `rf:A' it must be stated explicitly:
+```
+	<symbol id='b'>
+		<metadata>
+			<rdf:RDF>
+				<rf:B rdf:about='#b'/>
+			</rdf:RDF>
+		</metadata>
+		<use xlink:href='#a'/>
+		<use/>
+		<!-- more svg:use or svg:* -->
+	</symbol>
+```
 
 RDF Schema
 ----------
@@ -110,3 +155,22 @@ Appendix
 When loading files from the local file system Chrome needs to be started with a special flag:
 
 	google-chrome --allow-file-access-from-files & 2> /dev/null
+
+xlink vs xinclude
+-----------------
+The svg:use statement uses xlink to refer to the symbol:
+```xml
+	<use xlink:href='#some_symbol'/>
+	<use xlink:href='some_file.svg#some_symbol'/>
+```
+The second statement uses a symbol defined in another file, this makes it possible to have on-line repositories of symbols but it has a few drawbacks:
+1.	inconsistent support in browsers
+2.	the linked document is not fully part of the DOM, individual symbols can be read (through instanceRoot.correspondingElement property), but cannot be modified, making it impossible to add connecting lines. 
+
+The workaround is to use xinclude (unfortunately not supported by any browser but implemented in xinclude.xsl):
+```xml
+	<xi:include href='some_file.svg'/>
+	<use xlink:href='#some_symbol'/>
+```
+
+
