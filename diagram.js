@@ -80,7 +80,9 @@ function parse_rdf(){
 	xhttp.open("GET",'schema.rdf',false);
 	xhttp.send("");
 	r.databank.load(xhttp.responseXML);
-	console.log(r)	
+	//console.log(r)	
+	//console.log($.toJSON($.rdf.dump(r.databank)))
+	//console.log($.rdf.dump(r,{format:'application/json'}))
 	//get all subclasses of rf:Component
 	subclass=r
 	.prefix('rf','http://www.example.org/rf#')
@@ -91,8 +93,8 @@ function parse_rdf(){
 	//how can I add a resource?
 	subclass.push($.rdf.resource('<http://www.example.org/rf#Component>').value);
 	//subclass.push($.uri.absolute('<http://www.example.org/rf#Component>'));
-	console.log(subclass)
-	gleane_svg();
+	//console.log(subclass)
+	glean_svg();
 	r.prefix('rf','http://www.example.org/rf#').where('?s a rf:Line').each(function(){
 		//test if blank node
 		subject=this.s.value._string ? '<'+this.s.value._string+'>': this.s.value;
@@ -100,11 +102,11 @@ function parse_rdf(){
 		input=r.prefix('rf','http://www.example.org/rf#').where(subject+' rf:port ?p').where('?c rf:input ?p');
 		//connect_path(output[0].c.value.fragment,input[0].c.value.fragment,this.s.value.fragment)
 		try{
-			connect_path_(ports[output[0].p.value._string],ports[input[0].p.value._string],this.s.value.fragment)
+			//connect_path_(ports[output[0].p.value._string],ports[input[0].p.value._string],this.s.value.fragment)
 		}catch(e){
 			console.log(e);
-			console.log(output[0].p.value._string)
-			console.log(input[0].p.value._string)
+			//console.log(output[0].p.value._string)
+			//console.log(input[0].p.value._string)
 		}
 	}); 
 }
@@ -129,7 +131,33 @@ function handle_event(e){
 //there should be a simple rule to define input: component id+'_'+output class(es)
 //we need to augment the RDF document with some rules but dangerous: a lot of rules could be added, better: filter
 function is_subClassOf_rf_Component(){return subclass.indexOf(this.c.value)>-1;}
-function gleane_svg(){
+/*
+ * go through the document and extract all the metadata, inference is used	
+ */
+function glean_svg_(){
+	use=document.getElementsByTagNameNS('http://www.w3.org/2000/svg','use');
+	for(var i=0;i<use.length;++i){
+		//is any metadata available in the instanceRoot.correspondingElement?
+		symbol=use[i].instanceRoot.correspondingElement;
+		symbol_metadata(symbol);
+	}
+}
+function symbol_metadata(s){
+	symbol_id=s.baseURI+'#'+s.getAttribute('id');
+	console.log(symbol_id)
+	rdf=s.getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#','RDF');
+	if(rdf.length){
+		local = $.rdf().load({documentElement:rdf[0]});//gets confused about baseURI
+		//is the symbol type defined?
+		local.prefix('rf','http://www.example.org/rf#').where('<'+symbol_id+'> a ?p').each(function(){
+			console.log(this.p+'')
+		})
+	}else{ //get metadata from first used symbol
+		var use=s.getElementsByTagNameNS('http://www.w3.org/2000/svg','use');
+		if(use.length) symbol_metadata(use[0].instanceRoot.correspondingElement);
+	}
+}
+function glean_svg(){
 	r.where('?s a ?c').filter(is_subClassOf_rf_Component).each(function(){
 		//query SVG document
 		if(this.s.value._string){ //no blank nodes for now
