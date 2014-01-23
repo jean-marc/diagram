@@ -1,30 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:rf="http://www.example.org/rf#" id="svg2" version="1.1" onload="console.log('hello')">
-  <metadata id="metadata7">
-    <rdf:RDF>
-    </rdf:RDF>
-  </metadata>
+<svg 
+	xmlns:dc="http://purl.org/dc/elements/1.1/" 
+	xmlns:cc="http://creativecommons.org/ns#" 
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+	xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+	xmlns:svg="http://www.w3.org/2000/svg" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns="http://www.w3.org/2000/svg" 
+	xmlns:rf="http://www.example.org/rf#" 
+	id="svg2" 
+	version="1.1" 
+	onload="console.log('hello')"
+	xml:base='symbols'
+>
   <defs>
     <marker overflow="visible" id="head" viewBox="0 0 10 10" markerUnits="strokeWidth" orient="auto" markerWidth="3" markerHeight="4" refX="3" refY="2">
       <path d="M0,0 V4 L3,2 Z"/>
     </marker>
-  </defs>
-  <symbol overflow="visible" id="port">
+  <symbol id='port' overflow='visible'>
     <metadata>
       <rdf:RDF>
         <rf:Port rdf:about="#port"/>
       </rdf:RDF>
     </metadata>
-    <circle r="3"/>
+	<!-- alternate port definition x2,y2 is used for Bezier control point 
+		simple way to tie control point to port
+	-->
+	<line x1='0' y1='0' x2='100' y2='0' class='port'/>
   </symbol>
+  <symbol id='port_up' overflow='visible'><use xlink:href='#port' transform='rotate(-90)'/></symbol>
+  <symbol id='port_left' overflow='visible'><use xlink:href='#port' transform='rotate(180)'/></symbol>
+  <symbol id='port_down' overflow='visible'><use xlink:href='#port' transform='rotate(90)'/></symbol>
+  <symbol id='port_right' overflow='visible'><use xlink:href='#port'/></symbol>
   <symbol overflow="visible" id="box">
+	<metadata>
+		<rdf:RDF>
+			<rf:Component rdf:about='#box'/>
+		</rdf:RDF>
+	</metadata>
     <rect x="0" y="0" width="200" height="200" transform="translate(-100,-100)"/>
-    <use xlink:href="#port" x="-100" class="input"/>
-    <use xlink:href="#port" x="-200" class="input bezier"/>
-    <use xlink:href="#port" x="100" class="output"/>
-    <use xlink:href="#port" x="200" class="output bezier"/>
+    <use xlink:href="#port_left" x="-100" id="input"/>
+    <use xlink:href="#port_right" x="100" id="output"/>
   </symbol>
   <symbol overflow="visible" id="combiner">
+	<metadata>
+		<rdf:RDF>
+			<rf:Component rdf:about='#combiner'/>
+		</rdf:RDF>
+	</metadata>
     <circle r="100"/>
     <path d="M-100,0 L 100,0 M 0,100 L 0,-100"/>
   </symbol>
@@ -46,28 +69,52 @@
     <rect x="0" y="0" width="200" height="200" transform="translate(-100,-100)"/>
     <path d="M-100,-50L0,0M-100,50L0,0H100"/>
   </symbol>
+  <symbol overflow='visible' id='switch'>
+    <rect x="0" y="0" width="200" height="200" transform="translate(-100,-100)"/>
+	<line x1='-100' x2='100' transform='rotate(45)'/>
+	<line x1='-100' x2='100' transform='rotate(-45)'/>
+	<use id='_1' xlink:href='#port_left' x='-100' y='-50'/>
+	<use id='_1' xlink:href='#port_left' x='-100' y='50'/>
+	<use id='_1' xlink:href='#port_right' x='100' y='-50'/>
+	<use id='_1' xlink:href='#port_right' x='100' y='50'/>
+  </symbol>
   <symbol overflow="visible" id="baseball_switch">
+	<metadata>
+		<rdf:RDF>
+			<rf:Baseball_switch rdf:about='#baseball_switch'/>
+		</rdf:RDF>
+	</metadata>
     <circle r="100"/>
     <path d="M-100,0 A100,100 0 0 1 0,100"/>
     <path d="M 0,-100A100,100 0 0 0 100,0"/>
     <!-- how do we deal with multiple inputs/outputs? -->
-    <use xlink:href="#port" y="100" class="input"/>
-    <use xlink:href="#port" y="200" class="input bezier"/>
-    <use xlink:href="#port" y="-100" class="input _1"/>
-    <use xlink:href="#port" y="-200" class="input _1 bezier"/>
-    <use xlink:href="#port" x="100" class="output"/>
-    <use xlink:href="#port" x="200" class="output bezier"/>
-    <use xlink:href="#port" x="-100" class="output _1"/>
-    <use xlink:href="#port" x="-200" class="output _1 bezier"/>
+	<use id='input_1' xlink:href='#port_right' x='100'/>
+	<use id='output_1' xlink:href='#port_up' y='-100'/>
+	<use id='input_2' xlink:href='#port_left' x='-100'/>
+	<use id='output_2' xlink:href='#port_down' y='100'/>
   </symbol>
   <symbol overflow="visible" id="adc">
+	<metadata>
+		<rdf:RDF>
+			<rf:ADC rdf:about='#adc'/>
+		</rdf:RDF>
+	</metadata>
     <!--http://www.eeweb.com/blog/elettra_venosa/time-interleaved-adcs-for-digital-communication-receivers-->
     <polygon points="-100,0 -50,100 100,100 100,-100 -50,-100"/>
     <text style="stroke:none;fill:black;font-size:40px;text-anchor:middle;font-family:helvetica;">ADC</text>
-    <use xlink:href="#port" x="-100" class="input"/>
-    <use xlink:href="#port" x="-200" class="input bezier"/>
+    <use xlink:href="#port_left" x="-100" id="input"/>
   </symbol>
+	<!--
+  <symbol id='dac'>
+
+  </symbol>
+	-->
   <symbol overflow="visible" id="circulator">
+	<metadata>
+		<rdf:RDF>
+			<rf:Circulator rdf:about='#circulator'/>
+		</rdf:RDF>
+	</metadata>
     <circle r="100"/>
     <!-- arc -->
     <path marker-end="url(#head)" d="M60,0 A60,60 0 1 0 0,60"/>
@@ -76,8 +123,8 @@
     <text style="stroke:none;fill:black;font-size:40px;text-anchor:middle;font-family:helvetica;" x="-120" y="0">3</text>
   </symbol>
   <symbol overflow="visible" id="isolator">
-
-	</symbol>
+	<use xlink:href='#circulator'/>
+  </symbol>
   <symbol overflow="visible" id="coupler">
     <metadata>
       <rdf:RDF>
@@ -87,12 +134,9 @@
     <rect x="0" y="0" width="200" height="100" transform="translate(-100,-50)"/>
     <path d="M-100,0h200"/>
     <path marker-end="url(#head)" d="M-50,0A50,50 0 0 1 0,50"/>
-    <use xlink:href="#port" x="-100" class="input"/>
-    <use xlink:href="#port" x="-200" class="input bezier"/>
-    <use xlink:href="#port" x="100" class="output"/>
-    <use xlink:href="#port" x="200" class="output bezier"/>
-    <use xlink:href="#port" y="50" class="output _coupled"/>
-    <use xlink:href="#port" y="100" class="output _coupled bezier"/>
+    <use xlink:href="#port_left" x="-100" id="input"/>
+    <use xlink:href="#port_right" x="100" id="output"/>
+    <use xlink:href="#port_down" y="50" id="coupled"/>
   </symbol>
   <symbol overflow="visible" id="amplifier">
     <metadata>
@@ -102,10 +146,8 @@
     </metadata>
     <!-- equilateral sqrt(3)=1.7321-->
     <path d="M-100,100L100,0L-100,-100z"/>
-    <use xlink:href="#port" x="-100" class="input"/>
-    <use xlink:href="#port" x="-200" class="input bezier"/>
-    <use xlink:href="#port" x="100" class="output"/>
-    <use xlink:href="#port" x="200" class="output bezier"/>
+	<use id='input' xlink:href='#port_left' x='-100'/>
+	<use id='output' xlink:href='#port_right' x='100'/>
   </symbol>
   <symbol overflow="visible" id="dish">
     <!--<path d='M0,0l0,60M10,1l0,59M20,4l0,56M30,9l0,51M40,16l0,44M50,25l0,35M60,36l0,24' id='wave'/>-->
@@ -116,14 +158,14 @@
   <symbol overflow="visible" id="parabola" transform="scale(2)" style="stroke-width:3;">
     <path d="M-20,0L0,-30L20,0z" transform="translate(0,33)" id="base"/>
     <use xlink:href="#dish" transform="rotate(-135)"/>
+	<use id='_1' xlink:href='#port_left' x='-10'/>
   </symbol>
-  <symbol overflow="visible" id="rdish">
+  <symbol overflow="visible" id="antenna">
+	<metadata><rdf:RDF><rf:Antenna rdf:about='#antenna'/></rdf:RDF></metadata>
     <use xlink:href="#parabola"/>
-    <use xlink:href="#port" x="-10" class="input"/>
-    <use xlink:href="#port" x="-50" class="input bezier"/>
-  </symbol>
-  <symbol overflow="visible" id="ldish">
-    <use xlink:href="#parabola" transform="scale(-1,1)"/>
+	<!-- add a port on the air interface -->
+	<use xlink:href="#port" transform='rotate(-45) translate(25)' id='air'/>
+    <use xlink:href="#port_left" x="-10" id="portt"/><!-- problem with name - generic for now but we should separate input and output -->
   </symbol>
   <symbol overflow="visible" id="satellite">
     <rect width="80" height="150" transform="translate(-40,-100)"/>
@@ -142,8 +184,7 @@
     </metadata>
     <circle r="100"/>
     <use xlink:href="#sine" transform="scale(0.8)"/>
-    <use xlink:href="#port" x="100" class="output"/>
-    <use xlink:href="#port" x="200" class="output bezier"/>
+	<use xlink:href='#port_right' id='output' transform='translate(100)'/>
   </symbol>
   <symbol overflow="visible" id="filter">
     <metadata>
@@ -155,6 +196,8 @@
     <use xlink:href="#sine" transform="translate(0,50) scale(0.8)"/>
     <use xlink:href="#sine" transform="scale(0.8)"/>
     <use xlink:href="#sine" transform="translate(0,-50) scale(0.8)"/>
+	<use id='_2' xlink:href='#port_left' x='-100'/>
+	<use id='_1' xlink:href='#port_right' x='100'/>
   </symbol>
   <symbol overflow="visible" id="lowpass">
     <use xlink:href="#filter"/> <!-- will inherit the metadata -->
@@ -165,23 +208,42 @@
     <use xlink:href="#filter"/> <!-- will inherit the metadata -->
     <path d="m-10,10l20 -20" transform="translate(0,50)"/>
     <path d="m-10,10l20 -20" transform="translate(0,-50)"/>
-    <use xlink:href="#port" x="-100" class="input"/>
-    <use xlink:href="#port" x="-200" class="input bezier"/>
-    <use xlink:href="#port" x="100" class="output"/>
-    <use xlink:href="#port" x="200" class="output bezier"/>
   </symbol>
   <symbol overflow="visible" id="highpass">
     <use xlink:href="#filter"/> <!-- will inherit the metadata -->
     <path d="m-10,10l20 -20" transform="translate(0,50)"/>
     <path d="m-10,10l20 -20"/>
   </symbol>
-  <symbol overflow="visible" id="diplexer">
+
+  <symbol overflow="visible" id="duplexer">
     <!-- low-pass and high-pass combined-->
     <use xlink:href="#lowpass" y="-100"/>
     <use xlink:href="#highpass" y="100"/>
+	<use id='_1' xlink:href='#port_right' x='100'/>
+	<use id='_2' xlink:href='#port_left' x='-100' y='-100'/>
+	<use id='_3' xlink:href='#port_left' x='-100' y='+100'/>
   </symbol>
-  <symbol overflow="visible" id="duplexer">
+  <symbol overflow="visible" id="diplexer">
     <use xlink:href="#circulator"/>
+  </symbol>
+  <symbol id='imux'>
+	<metadata>
+		<rdf:RDF>
+			<rdfs:Class rdf:about='http://www.example.org/rf#IMUX'>
+				<rdfs:comment></rdfs:comment>
+			</rdfs:Class>
+		</rdf:RDF>
+	</metadata>
+  </symbol>
+
+  <symbol id='omux'>
+	<metadata>
+		<rdf:RDF>
+			<rdfs:Class rdf:about='http://www.example.org/rf#OMUX'>
+				<rdfs:comment></rdfs:comment>
+			</rdfs:Class>
+		</rdf:RDF>
+	</metadata>
   </symbol>
   <!-- test -->
   <symbol overflow="visible" id="tuner">
@@ -199,6 +261,7 @@
 	how do we connect the components? 
 	should components have their own metadata?
 	-->
+	<!--
   <symbol overflow="visible" id="block_converter">
     <metadata>
       <rdf:RDF>
@@ -217,13 +280,15 @@
     <use id='m' xlink:href="#mixer"/>
     <use id='f' xlink:href="#bandpass" transform='translate(300,0)'/>
   </symbol>
+	-->
   <symbol overflow="visible" id="cal_unit">
     <use xlink:href="#source"/>
-    <use xlink:href="symbols.svg#combiner" y="300"/>
-    <use xlink:href="symbols.svg#box" x="-150" y="600"/>
+    <use xlink:href="#combiner" y="300"/>
+    <use xlink:href="#box" x="-150" y="600"/>
     <text x="-150" y="600">BUC_l(ω)</text>
-    <use xlink:href="./symbols.svg#box" x="+150" y="600"/>
+    <use xlink:href="#box" x="+150" y="600"/>
     <text x="150" y="600">BUC_h(ω)</text>
     <!--<line y1='400' y2='500' marker-end='url(./symbols.svg#head)'/>-->
   </symbol>
+  </defs>
 </svg>
