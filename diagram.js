@@ -1,57 +1,60 @@
-function connect_line(from,to){
-	origin=document.getElementById(from);
-	dest=document.getElementById(to);
-	line=document.createElementNS("http://www.w3.org/2000/svg","line");
-	line.setAttributeNS(null,'class','Line');
-	var m=origin.getTransformToElement(line);
-	var n=dest.getTransformToElement(line);
-	origin_out=origin.instanceRoot.correspondingElement.querySelector('.output');
-	dest_in=dest.instanceRoot.correspondingElement.querySelector('.input');//does not work if multiple svg:use
-	line.setAttributeNS(null,"x1",origin_out.cx.baseVal.value*m.a+origin_out.cy.baseVal.value*m.c+m.e);
-	line.setAttributeNS(null,"y1",origin_out.cx.baseVal.value*m.b+origin_out.cy.baseVal.value*m.d+m.f);
-	line.setAttributeNS(null,"x2",dest_in.cx.baseVal.value*n.a+dest_in.cy.baseVal.value*n.c+n.e);
-	line.setAttributeNS(null,"y2",dest_in.cx.baseVal.value*n.b+dest_in.cy.baseVal.value*n.d+n.f);
-	document.getElementById('svg').appendChild(line);
-}
 function multiply(a,m){return {x:a.x*m.a+a.y*m.c+m.e, y:a.x*m.b+a.y*m.d+m.f}}
-function connect_path(from,to,id){
-	origin=document.getElementById(from);
-	origin_out=origin.instanceRoot.correspondingElement.querySelector('.output');
-	dest=document.getElementById(to);
-	path=document.createElementNS("http://www.w3.org/2000/svg","path");
-	path.setAttributeNS(null,'class','Line');
-	if(id) path.setAttributeNS(null,'id',id);
-	var m=origin.getTransformToElement(path);
-	var n=dest.getTransformToElement(path);
-	origin_out=origin.instanceRoot.correspondingElement.querySelector('.output');
-	origin_out_bezier=origin.instanceRoot.correspondingElement.querySelector('.output_bezier');
-	dest_in=dest.instanceRoot.correspondingElement.querySelector('.input');//does not work if multiple svg:use
-	dest_in_bezier=dest.instanceRoot.correspondingElement.querySelector('.input_bezier');//does not work if multiple svg:use
-	origin=multiply({x:origin_out.cx.baseVal.value,y:origin_out.cy.baseVal.value},m);
-	dest=multiply({x:dest_in.cx.baseVal.value,y:dest_in.cy.baseVal.value},n);
-	if(origin_out_bezier){
-		origin_ctl=multiply({x:origin_out_bezier.cx.baseVal.value,y:origin_out_bezier.cy.baseVal.value},m);
-		if(dest_in_bezier){//cubic Bezier
-			dest_ctl=multiply({x:dest_in_bezier.cx.baseVal.value,y:dest_in_bezier.cy.baseVal.value},n);
-			path.setAttributeNS(null,'d','M'+origin.x+' '+origin.y+'C'+origin_ctl.x+' '+origin_ctl.y+' '+dest_ctl.x+' '+dest_ctl.y+' '+dest.x+' '+dest.y);
-		}else{//quadratic Bezier
-			path.setAttributeNS(null,'d','M'+origin.x+' '+origin.y+'Q'+origin_ctl.x+' '+origin_ctl.y+' '+dest.x+' '+dest.y);
-		}
-	}else{
-		path.setAttributeNS(null,'d','M'+origin.x+' '+origin.y+'L'+dest.x+' '+dest.y);
-	}	
-	document.getElementById('svg').appendChild(path);
+//will navigate the use->symbol relationship to find the symbol `port'
+//draw a circle where the port is supposed to be
+function test_port(elm){
+	circle=document.createElementNS('http://www.w3.org/2000/svg','circle');	
+	circle.setAttributeNS(null,'r','5');
+	var m=elm.c.getTransformToElement(path);
+	//there is another transform: from use 
+	console.log(m)
+	var n=elm.p.getTransformToElement(path)
+	m=m.multiply(n);
+	console.log(n)
+	//elm.p is a use statement
+	//console.log(elm.p.instanceRoot.correspondingElement.getAttribute('id'));
+	//we need to access the line inside the symbol
+	line=document.querySelectorAll('#port line')[0];
+	console.log(line);
+	o=multiply({x:line.x1.baseVal.value,y:line.y1.baseVal.value},m);
+	circle.setAttributeNS(null,'cx',o.x);	
+	circle.setAttributeNS(null,'cy',o.y);	
+	
+	document.getElementById('svg').appendChild(circle);
+
 }
-function connect_path_(from,to,id){
+function connect_path(from,to,id){
+	//we need to be able to deal with <use x= y=../>
+	//we are looking for symbol with id='port' 
 	path=document.createElementNS("http://www.w3.org/2000/svg","path");
 	path.setAttributeNS(null,'class','Line');
+	path.setAttributeNS(null,'style','marker-end:url(#head)')
 	if(id) path.setAttributeNS(null,'id',id);
-	var m=from.c.getTransformToElement(path);
-	var n=to.c.getTransformToElement(path);
-	origin_out=from.p;
-	origin_out_bezier=from.ctl;
-	dest_in=to.p;
-	dest_in_bezier=to.ctl;
+	//test_port(to);
+	//test_port(from)
+	console.log(from);
+	console.log(to);
+	var m=from.c.getTransformToElement(path).translate(from.p.x.baseVal.value,from.p.y.baseVal.value).multiply(from.p.getTransformToElement(path));
+	//from.p might not be the actual port 
+	if(from.p.instanceRoot.correspondingElement.getAttribute('id')!='port'){
+		//let's get the first use element	
+		s=from.p.instanceRoot.correspondingElement;
+		use=s.getElementsByTagNameNS('http://www.w3.org/2000/svg','use')[0];
+		console.log(use)
+		m=m.multiply(use.getTransformToElement(path));
+	}
+	var n=to.c.getTransformToElement(path).translate(to.p.x.baseVal.value,to.p.y.baseVal.value).multiply(to.p.getTransformToElement(path));
+	if(to.p.instanceRoot.correspondingElement.getAttribute('id')!='port'){
+		//let's get the first use element	
+		s=to.p.instanceRoot.correspondingElement;
+		use=s.getElementsByTagNameNS('http://www.w3.org/2000/svg','use')[0];
+		console.log(use)
+		n=n.multiply(use.getTransformToElement(path));
+	}
+	line=document.querySelectorAll('#port line')[0];
+	origin_out={x:line.x1,y:line.y1};
+	origin_out_bezier={x:line.x2,y:line.y2};
+	dest_in=origin_out;
+	dest_in_bezier=origin_out_bezier;
 	origin=multiply({x:origin_out.x.baseVal.value,y:origin_out.y.baseVal.value},m);
 	dest=multiply({x:dest_in.x.baseVal.value,y:dest_in.y.baseVal.value},n);
 	if(origin_out_bezier){
@@ -65,50 +68,95 @@ function connect_path_(from,to,id){
 	}else{
 		path.setAttributeNS(null,'d','M'+origin.x+' '+origin.y+'L'+dest.x+' '+dest.y);
 	}	
+	//should add to element that contents svg:metada so we can easily style
 	document.getElementById('svg').appendChild(path);
 }
 //parse svg metadata and store, should also load schema.rdf
 var r;
 var subclass;
 var ports=new Array();
+var _ports=new Array();
+var index=0;
+function get_id(){return 'genid_'+index++;}
+function get_rdfs_type(elm){
+	return r.where('<'+elm.baseURI+'#'+elm.getAttribute('id')+'> a ?t');
+}
 function parse_rdf(){
 	//xml:base must be defined in rdf:RDF
-	rdf=document.getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#','RDF')[0];
-	r = $.rdf().load({documentElement:rdf});	
+	rdf=document.getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#','RDF');
+	r=$.rdf();
+	for(var i=0;i<rdf.length;++i){
+		r.databank.load({documentElement:rdf[i]});	
+	}
+	//augment the dataset with info from use statement inside symbols
+	symbols=document.getElementsByTagNameNS('http://www.w3.org/2000/svg','symbol');
+	for(var i=0;i<symbols.length;++i){
+		//do we know the type of that symbol?
+		type=get_rdfs_type(symbols[i]);
+		if(type.length==0){ 
+			//get the type of first use statement
+			uses=symbols[i].getElementsByTagNameNS('http://www.w3.org/2000/svg','use');
+			if(uses.length){
+				//look-up type of symbols	
+				type=get_rdfs_type(uses[0].instanceRoot.correspondingElement);
+			}else{
+				console.log('`'+symbols[i].getAttribute('id')+"' unknown RDF type");
+			}
+		}
+		//add statement to document
+		type.each(function(){
+			r.add('<'+symbols[i].baseURI+'#'+symbols[i].getAttribute('id')+'> a <'+this.t.value._string+'>');
+			//console.log(this.t.value.toString());
+		})
+	}
+	//we iterate again but now looking for ports
+	for(var i=0;i<symbols.length;++i){
+		symbol_id=symbols[i].baseURI+'#'+symbols[i].getAttribute('id');
+		uses=symbols[i].getElementsByTagNameNS('http://www.w3.org/2000/svg','use');
+		for(var j=0;j<uses.length;++j){
+			get_rdfs_type(uses[j].instanceRoot.correspondingElement).filter(function(){
+				return this.t.value._string=='http://www.example.org/rf#Port';	
+			}).each(function(){
+				use_id=uses[j].baseURI+'#'+uses[j].getAttribute('id');//probably not unique
+				r.add('<'+symbol_id+'> <http://www.example.org/rf#port> <'+use_id+'>');
+			});
+		}	
+	}
+	//now let's add the ports
+	uses=document.querySelectorAll('g use');
+	for(var j=0;j<uses.length;++j){
+		use_id=uses[j].baseURI+'#'+uses[j].getAttribute('id');
+		symbol_id=uses[j].instanceRoot.correspondingElement.baseURI+'#'+uses[j].instanceRoot.correspondingElement.getAttribute('id');
+		get_rdfs_type(uses[j].instanceRoot.correspondingElement).each(function(){
+			r.add('<'+use_id+'> a <'+this.t.value._string+'>');
+			//get all ports attached to symbol
+		});
+		r.prefix('rf','http://www.example.org/rf#').where('<'+symbol_id+'> rf:port ?p').each(function(){
+			//console.log(this.p.value);
+			port_id=use_id+'_'+this.p.value.fragment;
+			//ports[port_id]={c:uses[j],p:document.getElementById(this.p.value.fragment)};
+			//work around non unique ID by restricting scope
+			ports[port_id]={c:uses[j],p:uses[j].instanceRoot.correspondingElement.querySelectorAll('[id='+this.p.value.fragment+']')[0]};
+			r.add('<'+use_id+'> <http://www.example.org/rf#port> <'+port_id+'>')
+		})
+
+	}	
+	//connect the ports	
+	r.prefix('rf','http://www.example.org/rf#').where('?s a rf:Line').each(function(){
+		subject=this.s.value._string ? '<'+this.s.value._string+'>': this.s.value;
+		_ports=r.prefix('rf','http://www.example.org/rf#').where(subject+' rf:port ?p');
+		if(_ports.length!=2)
+			console.log('rf:Line `'+this.s.value+"' does not have 2 ports");
+		else	
+			connect_path(ports[_ports[0].p.value._string],ports[_ports[1].p.value._string],this.s.value.fragment)
+	})
 	//load schema.rdf
+	/*
 	xhttp=new XMLHttpRequest();
 	xhttp.open("GET",'schema.rdf',false);
 	xhttp.send("");
 	r.databank.load(xhttp.responseXML);
-	//console.log(r)	
-	//console.log($.toJSON($.rdf.dump(r.databank)))
-	//console.log($.rdf.dump(r,{format:'application/json'}))
-	//get all subclasses of rf:Component
-	subclass=r
-	.prefix('rf','http://www.example.org/rf#')
-	.prefix('rdfs','http://www.w3.org/2000/01/rdf-schema#')
-	.where('?s rdfs:subClassOf rf:Component')
-	.map(function(){ return this.s.value; })
-	.toArray();
-	//how can I add a resource?
-	subclass.push($.rdf.resource('<http://www.example.org/rf#Component>').value);
-	//subclass.push($.uri.absolute('<http://www.example.org/rf#Component>'));
-	//console.log(subclass)
-	glean_svg();
-	r.prefix('rf','http://www.example.org/rf#').where('?s a rf:Line').each(function(){
-		//test if blank node
-		subject=this.s.value._string ? '<'+this.s.value._string+'>': this.s.value;
-		output=r.prefix('rf','http://www.example.org/rf#').where(subject+' rf:port ?p').where('?c rf:output ?p');
-		input=r.prefix('rf','http://www.example.org/rf#').where(subject+' rf:port ?p').where('?c rf:input ?p');
-		//connect_path(output[0].c.value.fragment,input[0].c.value.fragment,this.s.value.fragment)
-		try{
-			//connect_path_(ports[output[0].p.value._string],ports[input[0].p.value._string],this.s.value.fragment)
-		}catch(e){
-			console.log(e);
-			//console.log(output[0].p.value._string)
-			//console.log(input[0].p.value._string)
-		}
-	}); 
+	*/
 }
 //add events to run query when hovering element
 function mouse_event(){
@@ -124,60 +172,6 @@ function handle_event(e){
 	current_element=elm;
 	current_element.classList.add('selected');	
 	//query database
-	id=elm.getAttribute('id');
-	console.log($.toJSON($.rdf.dump(r.databank.describe(['<http://www.example.org/rf#'+id+'>']))))
-}
-//go through SVG and find all components input and output and create rdf:ID's
-//there should be a simple rule to define input: component id+'_'+output class(es)
-//we need to augment the RDF document with some rules but dangerous: a lot of rules could be added, better: filter
-function is_subClassOf_rf_Component(){return subclass.indexOf(this.c.value)>-1;}
-/*
- * go through the document and extract all the metadata, inference is used	
- */
-function glean_svg_(){
-	use=document.getElementsByTagNameNS('http://www.w3.org/2000/svg','use');
-	for(var i=0;i<use.length;++i){
-		//is any metadata available in the instanceRoot.correspondingElement?
-		symbol=use[i].instanceRoot.correspondingElement;
-		symbol_metadata(symbol);
-	}
-}
-function symbol_metadata(s){
-	symbol_id=s.baseURI+'#'+s.getAttribute('id');
-	console.log(symbol_id)
-	rdf=s.getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#','RDF');
-	if(rdf.length){
-		local = $.rdf().load({documentElement:rdf[0]});//gets confused about baseURI
-		//is the symbol type defined?
-		local.prefix('rf','http://www.example.org/rf#').where('<'+symbol_id+'> a ?p').each(function(){
-			console.log(this.p+'')
-		})
-	}else{ //get metadata from first used symbol
-		var use=s.getElementsByTagNameNS('http://www.w3.org/2000/svg','use');
-		if(use.length) symbol_metadata(use[0].instanceRoot.correspondingElement);
-	}
-}
-function glean_svg(){
-	r.where('?s a ?c').filter(is_subClassOf_rf_Component).each(function(){
-		//query SVG document
-		if(this.s.value._string){ //no blank nodes for now
-			elm=document.getElementById(this.s.value.fragment);
-			if(elm&&elm.instanceRoot){//only svg:use elements
-				_elm=elm.instanceRoot.correspondingElement;
-				output=_elm.querySelectorAll('.output:not(.bezier)');
-				//add statements
-				for(var i=0;i<output.length;++i){
-					id='http://www.example.org/rf#'+this.s.value.fragment+'_'+output[i].className.baseVal.replace(/ /g,'')
-					r.add('<http://www.example.org/rf#'+this.s.value.fragment+'> rf:output <'+id+'>');
-					ports[id]={c:elm,p:output[i],ctl:_elm.getElementsByClassName(output[i].className.baseVal+' bezier')[0]};
-				}
-				input=_elm.querySelectorAll('.input:not(.bezier)');
-				for(var i=0;i<input.length;++i){
-					id='http://www.example.org/rf#'+this.s.value.fragment+'_'+input[i].className.baseVal.replace(/ /g,'')
-					r.add('<http://www.example.org/rf#'+this.s.value.fragment+'> rf:input <'+id+'>');
-					ports[id]={c:elm,p:input[i],ctl:_elm.getElementsByClassName(input[i].className.baseVal+' bezier')[0]};
-				}
-			}
-		}
-	})
+	elm_id=elm.baseURI+'#'+elm.getAttribute('id');
+	console.log($.toJSON($.rdf.dump(r.databank.describe(['<'+elm_id+'>']))))
 }
