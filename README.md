@@ -110,7 +110,7 @@ So in this case symbol `b' is of class `rf:A' and the following statement will b
 ```xml
 	<rf:A rdf:about='#b'/>
 ```
-If the new symbol `d' is not of class `rf:A' it must be stated explicitly:
+If the new symbol `b' is not of class `rf:A' it must be stated explicitly:
 ```
 	<symbol id='b'>
 		<metadata>
@@ -123,6 +123,9 @@ If the new symbol `d' is not of class `rf:A' it must be stated explicitly:
 		<!-- more svg:use or svg:* -->
 	</symbol>
 ```
+Extracting Metadata
+-------------------
+Beside extracting explicit metadata (declared inside svg:metadata) implicit metadata can be created from the svg:use/svg:symbol relationships.
 
 RDF Schema
 ----------
@@ -149,6 +152,11 @@ Extracting the RDF metadata from SVG file can be done with the tool provided by 
 	rapper -f scanForRDF=1 example.svg
 
 It will scan the whole document for any rdf:RDF element and return all the triples.
+
+Part of the document is created at runtime (components get connected together), if the final document is to be consumed outside the browser, for instance it needs to be printed or included in another document as PS or PDF, it must be made available. There are several methods:
+1. `save as' method in the browser (only works in Firefox?)
+2. print to file in the browser
+3. stand-alone rendering (Batik? ...)
 
 Appendix
 --------
